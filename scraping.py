@@ -34,9 +34,9 @@ def find_content(url):
 def html_to_data(post):
     try:
         dataObj = {
-            "heading": clean_text(post.find('h4').text),
-            "Author":  post.find('div', {"class": 'col-sm-6'}).text.split(' ')[2],
+            "Title": clean_text(post.find('h4').text),
             "Content": find_content(post.find('a').get('href')),
+            "Author":  post.find('div', {"class": 'col-sm-6'}).text.split(' ')[2],
             "Date": " ".join(post.find('div', {"class": 'col-sm-6'}).text.split(' ')[4:8])
         }
         return dataObj
@@ -63,7 +63,7 @@ def find_all_post(soup):
 
 def clean_text(text):
     try:
-        return text.replace('\n', '').replace('\t', '').replace('\xa0', '')
+        return text.strip('\n').strip('\t')
     except:
         return
 
@@ -82,6 +82,3 @@ def find_all_data_from_pages():
             data = scraping_date(link)
             all_data.extend(find_all_post(data))
     return all_data
-
-
-print(find_all_data_from_pages())
