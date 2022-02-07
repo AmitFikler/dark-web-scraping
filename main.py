@@ -1,14 +1,15 @@
-import os
-from mongoengine import connect
-from typing import Optional
-
-from fastapi import FastAPI
-from pydantic import BaseModel
-
-from models import NewPost, Post
-from scraping import find_all_data_from_pages
-
+import json
 from dotenv import load_dotenv
+from scraping import find_all_data_from_pages
+from models import NewPost, Post
+from fastapi import FastAPI
+import os
+import sys
+
+from mongoengine import connect
+sys.setrecursionlimit(3000)
+
+
 load_dotenv()
 
 app = FastAPI()
@@ -34,7 +35,7 @@ save_all_posts()
 
 @app.get("/data")
 def get_all_data():
-    data = Post.objects.all()
+    data = json.loads(Post.objects.to_json())
     return data
 
 
