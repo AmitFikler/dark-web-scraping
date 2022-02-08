@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 
+from helpers.paste import is_paste_equal
+
 proxies = {
     "socks5h": "socks5h://127.0.0.1:9050",
     "http": "http://127.0.0.1:8118",
@@ -12,9 +14,15 @@ website_config = {
     "author_selector": ".col-sm-6",
     "date_selector": ".col-sm-6",
     "full_content_selector": ".btn-success",
-    "content_selector": "li",
+    "content_selector": "ol > li",
     "pagination_selector": ".pagination>li"
 }
+
+my_last_paste = {'Title': '@deep search@', 'Author': 'Anonymous',
+                 'Content': '. - Most Powerful Search Engine On TOR - \xa0. http://search7tdrcvri22rieiwgi5g46qnwsesvnubqav2xakhezv4hjzkkad.onion/. .. .. id:9cf8D1BF.', 'Date': '08 Feb 2022, 18:13:55'}
+
+# Stop updating condition
+is_updated = False
 
 # ---------- GET LANDING PAGE FOR WEBSITE WITH URL ---------- #
 
@@ -40,6 +48,7 @@ def get_pastes_list_from_html(html_code, paste_selector):
     :paste_selector: CSS selector to find paste
     :return: pastes into objects list
     """
+    global is_updated
     pastes = html_code.select(paste_selector)  # Get all pastes containers
     pastes_list = []
     # Run throw all pastes containters and get parsed obj from each. Insert into list
@@ -47,8 +56,13 @@ def get_pastes_list_from_html(html_code, paste_selector):
         parsed_obj = from_paste_to_object(
             paste, website_config["title_selector"], website_config["author_selector"], website_config["full_content_selector"])
         if parsed_obj:
-            # print(f"\n\n parsed_obj: \n\n {parsed_obj}")
-            pastes_list.append(parsed_obj)
+            # print(f"parsed_obj: {parsed_obj}")
+            if is_paste_equal(parsed_obj, my_last_paste):  # Added all new pastes
+                print("Equal")
+                is_updated = True
+                return pastes_list
+            else:
+                pastes_list.append(parsed_obj)
     print(f"pastes_list :{pastes_list }\n")
     return pastes_list
 
@@ -89,7 +103,7 @@ def get_paste_content(full_paste_url, content_selector):
     response = requests.get(full_paste_url, proxies=proxies)
     full_paste_html = BeautifulSoup(response.text, 'html.parser')
     # Get content list
-    all_content = full_paste_html.find_all(content_selector)
+    all_content = full_paste_html.select(content_selector)
     content = ""
     for li in all_content:
         content += f"{li.text}. "  # Add to one string
@@ -115,6 +129,8 @@ def find_all_data_from_pages():
     """
     :return: List with all pastes from all pages
     """
+    global is_updated
+    global my_last_paste
     html_page = get_landing_page(
         "http://strongerw2ise74v3duebgsvug4mehyhlpa7f6kfwnas7zofs3kov7yd.onion/all")
     # Get pages number and empty list
@@ -124,7 +140,7 @@ def find_all_data_from_pages():
     page = 1
 
     # Run throw all pages from 1 to last
-    while page < number_of_pages + 1:
+    while page < number_of_pages + 1 and is_updated != True:
         print(f"page: {page}")
         # Get html for page
         html_page = get_landing_page(
@@ -133,5 +149,8 @@ def find_all_data_from_pages():
         all_data.extend(get_pastes_list_from_html(
             html_page, website_config["paste_selector"]))
         page += 1
-    print(all_data)
+
+    is_updated = False  # Change back condition
+    if len(all_data) > 0:
+        my_last_paste = all_data[0]  # Update flag
     return all_data

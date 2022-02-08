@@ -18,24 +18,19 @@ connect('dark_web',
         host=os.getenv('MONGO_URI'))
 
 
-def save_all_posts():
-    data_length = Post.objects.count()
+def save_posts():
     data = find_all_data_from_pages()
-    if data_length == 0:
-        for post in data:
-            Post(**post).save()
-    else:
-        for post in data[data_length + 1:]:
-            Post(**post).save()
+    for post in data:
+        Post(**post).save()
+    print("haha")
     return "Data inserted"
-
-
-save_all_posts()
 
 
 @app.get("/data")
 def get_all_data():
-    data = json.loads(Post.objects.to_json())
+    save_posts()
+    data = json.loads(Post.objects.order_by(
+        '-Date').to_json())  # order by date
     return data
 
 
