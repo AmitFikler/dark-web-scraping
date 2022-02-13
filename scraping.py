@@ -18,8 +18,8 @@ website_config = {
     "pagination_selector": ".pagination>li"
 }
 
-my_last_paste = {'Title': '@deep search@', 'Author': 'Anonymous',
-                 'Content': '. - Most Powerful Search Engine On TOR - \xa0. http://search7tdrcvri22rieiwgi5g46qnwsesvnubqav2xakhezv4hjzkkad.onion/. .. .. id:9cf8D1BF.', 'Date': '08 Feb 2022, 18:13:55'}
+my_last_paste = {'Title': 'BITCOIN GENERAT0R v.2022', 'Author': 'Anonymous',
+                 'Content': 'BITCOIN GENERATOR v.2022. \xa0. Earn Free Bitcoins in just a few moments without any investment! Use our Bitcoin Generator and you will receive free unlimited Bitcoin instantly!. \xa0. http://2222asi7crk3yh5dbanvul4uldpktisa637rznipn3g5qodyzqz5urqd.onion/.', 'Date': '13 Feb 2022, 07:00:10'}
 
 # Stop updating condition
 is_updated = False

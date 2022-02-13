@@ -1,42 +1,51 @@
-import json
-from dotenv import load_dotenv
+from database import database
 from scraping import find_all_data_from_pages
-from models import NewPost, Post
 from fastapi import FastAPI
-import os
-import sys
 
-from mongoengine import connect
-sys.setrecursionlimit(3000)
-
-
-load_dotenv()
-
+############## SERVER ################
 app = FastAPI()
 
-connect('dark_web',
-        host=os.getenv('MONGO_URI'))
+
+############## INITIALIZE DB ################
+database.Database.initialize()
 
 
 def save_posts():
     data = find_all_data_from_pages()
     for post in data:
-        Post(**post).save()
-    print("haha")
+        database.Database.insert("post", post)
     return "Data inserted"
+
+############## GET ALL PASTE /data ################
 
 
 @app.get("/data")
 def get_all_data():
     save_posts()
-    data = json.loads(Post.objects.order_by(
-        '-Date').to_json())  # order by date
+    data = database.Database.find("post", {})
     return data
 
 
-@app.post("/add_post")
-def create_data(data: NewPost):
-    post = Post(Title=data.Title, Content=data.Content,
-                Author=data.Author, Date=data.Date)
-    post.save()
-    return post
+# Analytics
+# common words
+@app.get("/analysis/common_Words_content")
+def get_dark_common_words_content():
+    return database.Database.common_word_content("post")
+
+
+@app.get("/analysis/common_Words_title")
+def get_dark_common_words_title():
+    return database.Database.common_word_title("post")
+# Total pastes
+
+
+@app.get("/analysis/total_amount")
+def get_total_pastes_amount():
+    return database.Database.count("post")
+
+# Pastes per author
+
+
+@app.get("/analysis/per_author")
+def get_authors_analysis():
+    return database.Database.get_authors_analysis("post")
