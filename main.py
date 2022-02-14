@@ -1,3 +1,4 @@
+import uvicorn
 from database import database
 from scraping import find_all_data_from_pages
 from fastapi import FastAPI
@@ -49,3 +50,7 @@ def get_total_pastes_amount():
 @app.get("/analysis/per_author")
 def get_authors_analysis():
     return database.Database.get_authors_analysis("post")
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, port=8000, host="0.0.0.0")

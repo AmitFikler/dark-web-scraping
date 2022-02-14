@@ -13,17 +13,10 @@ function Analyze() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('use effect');
     getContentCommonWord().then((res) => setCommonWords(res));
     getTitleCommonWord().then((res) => setCommonTitles(res));
     getTotalPastes().then((res) => setTotalPastes(res));
     getPastesPerAuthor().then((res) => setPastesPerAuthor(res));
-    setInterval(() => {
-      getContentCommonWord().then((res) => setCommonWords(res));
-      getTitleCommonWord().then((res) => setCommonTitles(res));
-      getTotalPastes().then((res) => setTotalPastes(res));
-      getPastesPerAuthor().then((res) => setPastesPerAuthor(res));
-    }, 120000);
   }, []);
   const getContentCommonWord = async () => {
     const { data } = await axios.get(
@@ -69,7 +62,7 @@ function Analyze() {
   };
   return (
     <>
-      <h1>Analyze</h1>
+      <h1>Analyzer:</h1>
       <div className="navigateBtn" onClick={() => navigate('/')}>
         <button>Home</button>
       </div>

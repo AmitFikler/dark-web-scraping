@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Paste } from '../../@types/paste';
 import Pastes from './pastes';
+import { DebounceInput } from 'react-debounce-input';
 
 function HomePage() {
   const [pastes, setPastes] = useState<Paste[]>([]);
@@ -12,7 +13,7 @@ function HomePage() {
 
   useEffect(() => {
     fetchPaste();
-    setInterval(fetchPaste, 6000000);
+    setInterval(fetchPaste, 120000);
   }, []);
 
   const fetchPaste = async () => {
@@ -22,15 +23,17 @@ function HomePage() {
     setIsLoading(false);
   };
 
-  const onChangeInput = () => {};
-
   return (
     <>
       <h1>DARK WEB SCRAPING</h1>
       <div className="navigateBtn" onClick={() => navigate('/analyze')}>
         <button>Analyzer</button>
       </div>
-      <input type={'text'}></input>
+      <DebounceInput
+        minLength={2}
+        debounceTimeout={500}
+        onChange={(e) => setInput(e.target.value)}
+      />
       {isLoading ? (
         <div>
           <span className="loader"></span>
@@ -38,7 +41,11 @@ function HomePage() {
       ) : (
         <div className="pastes">
           {pastes ? (
-            pastes.map((paste) => <Pastes paste={paste} />)
+            pastes
+              .filter((paste) =>
+                paste.Title.toLowerCase().includes(input.toLowerCase())
+              )
+              .map((paste) => <Pastes paste={paste} />)
           ) : (
             <p>Loading...</p>
           )}

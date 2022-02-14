@@ -48,7 +48,7 @@ function PieComp({
     },
   };
   return (
-    <div style={{ height: 350, width: 350 }}>
+    <div style={{ height: 300, width: 300 }}>
       <Pie data={dataForPie} options={options} />
     </div>
   );

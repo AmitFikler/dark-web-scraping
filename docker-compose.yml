@@ -1,0 +1,25 @@
+version: "3.1"
+
+services:
+  api:
+    container_name: backend
+    restart: always
+    build: ./
+    ports:
+      - "8000:8000"
+    depends_on:
+      - dark
+  client:
+    container_name: frontend
+    restart: always
+    build: ./client
+    ports:
+      - "3000:3000"
+  dark:
+    image: dperson/torproxy
+    container_name: tor-proxy
+    ports:
+      - '8118:8118'
+    expose:
+      - 8118
+

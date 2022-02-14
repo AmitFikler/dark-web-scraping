@@ -3,10 +3,14 @@ from bs4 import BeautifulSoup
 
 from helpers.paste import is_paste_equal
 
+proxy_host = "tor-proxy"
+proxy_port = "8118"
+proxy_auth = ":"
 proxies = {
-    "socks5h": "socks5h://127.0.0.1:9050",
-    "http": "http://127.0.0.1:8118",
+    "https": "https://{}@{}:{}/".format(proxy_auth, proxy_host, proxy_port),
+    "http": "http://{}@{}:{}/".format(proxy_auth, proxy_host, proxy_port)
 }
+
 
 website_config = {
     "paste_selector": "#list > .row",
@@ -18,8 +22,8 @@ website_config = {
     "pagination_selector": ".pagination>li"
 }
 
-my_last_paste = {'Title': 'BITCOIN GENERAT0R v.2022', 'Author': 'Anonymous',
-                 'Content': 'BITCOIN GENERATOR v.2022. \xa0. Earn Free Bitcoins in just a few moments without any investment! Use our Bitcoin Generator and you will receive free unlimited Bitcoin instantly!. \xa0. http://2222asi7crk3yh5dbanvul4uldpktisa637rznipn3g5qodyzqz5urqd.onion/.', 'Date': '13 Feb 2022, 07:00:10'}
+my_last_paste = {'Title': 'Short Clips', 'Author': 'Anonymous',
+                 'Content': 'Watch this short clips. Make your dream come true.You will see power of NAKED nature.. Download athttps://www.upload-4ever.com/tq7wr6q98kh7.', 'Date': '13 Feb 2022, 14:09:43'}
 
 # Stop updating condition
 is_updated = False
@@ -34,6 +38,7 @@ def get_landing_page(url):
     """
     try:
         response = requests.get(url, proxies=proxies)
+        print(response)
         page_clean_html = BeautifulSoup(response.text, 'html.parser')
         return page_clean_html
     except:
